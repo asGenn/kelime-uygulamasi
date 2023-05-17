@@ -1,4 +1,4 @@
-package com.example.kelime_uygulamasi;
+package com.example.kelime_uygulamasi.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.kelime_uygulamasi.MainActivity;
+import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentSignupPageBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -85,7 +87,7 @@ public class FragmentSignupPage extends Fragment {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()){
                                     Toast.makeText(getActivity(),"Kayıt Olma İşleminiz Gerçekleşmiştir",Toast.LENGTH_SHORT).show();
-                                    Intent intent=new Intent(getActivity(),MainActivity.class);
+                                    Intent intent=new Intent(getActivity(), MainActivity.class);
                                     startActivity(intent);
                                 }
                                 else{

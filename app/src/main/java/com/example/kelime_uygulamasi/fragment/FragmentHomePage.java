@@ -1,4 +1,4 @@
-package com.example.kelime_uygulamasi;
+package com.example.kelime_uygulamasi.fragment;
 
 import android.os.Bundle;
 

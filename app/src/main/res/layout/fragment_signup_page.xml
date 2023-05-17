@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_shape"
-    tools:context=".FragmentSignupPage">
+    tools:context=".fragment.FragmentSignupPage">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"

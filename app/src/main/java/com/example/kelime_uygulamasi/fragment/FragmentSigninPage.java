@@ -1,4 +1,4 @@
-package com.example.kelime_uygulamasi;
+package com.example.kelime_uygulamasi.fragment;
 
 import android.os.Bundle;
 
@@ -15,7 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.example.kelime_uygulamasi.databinding.FragmentSigninPageBinding;
+import com.example.kelime_uygulamasi.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;

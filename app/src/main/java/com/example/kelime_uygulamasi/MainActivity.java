@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.example.kelime_uygulamasi.databinding.ActivityMainBinding;
+import com.example.kelime_uygulamasi.fragment.FragmentSigninPage;
 
 public class MainActivity extends AppCompatActivity {
 
