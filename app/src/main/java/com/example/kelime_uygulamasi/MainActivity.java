@@ -12,16 +12,13 @@ import com.example.kelime_uygulamasi.repository.FirebaseRepository;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding tasarim;
-    //abdulsamet
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         tasarim = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(tasarim.getRoot());
         fragment();
-        FirebaseRepository firebaseRepository = new FirebaseRepository();
-        firebaseRepository.signIn();
-        firebaseRepository.deneme();
     }
 
     public void fragment(){

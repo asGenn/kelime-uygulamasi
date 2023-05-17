@@ -3,24 +3,24 @@ package com.example.kelime_uygulamasi.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.kelime_uygulamasi.databinding.FragmentHomePageBinding;
+import com.example.kelime_uygulamasi.R;
+import com.example.kelime_uygulamasi.databinding.FragmentAddWordsBinding;
 
-public class FragmentHomePage extends Fragment {
+public class FragmentAddWords extends Fragment {
 
-    private FragmentHomePageBinding tasarim;
+    private FragmentAddWordsBinding tasarim;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tasarim = FragmentHomePageBinding.inflate(getLayoutInflater(), container, false);
+        tasarim = FragmentAddWordsBinding.inflate(getLayoutInflater(), container, false);
 
-        
+
+
         return tasarim.getRoot();
     }
 }
