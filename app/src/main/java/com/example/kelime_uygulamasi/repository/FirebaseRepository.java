@@ -11,5 +11,6 @@ public class FirebaseRepository {
 
     public void deneme(){
         System.out.println("deneme");
+        System.out.printf("denme2");
     }
 }
