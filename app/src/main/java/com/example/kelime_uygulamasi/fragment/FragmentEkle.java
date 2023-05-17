@@ -17,13 +17,13 @@ import com.example.kelime_uygulamasi.databinding.FragmentEkleBinding;
 
 public class FragmentEkle extends Fragment {
 
-    private FragmentEkleBinding tasarim;
+    private FragmentEkleBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tasarim = FragmentEkleBinding.inflate(getLayoutInflater(), container, false);
+        binding = FragmentEkleBinding.inflate(getLayoutInflater(), container, false);
         setupOnBackPressed();
-        return tasarim.getRoot();
+        return binding.getRoot();
     }
 
     private void setupOnBackPressed(){
@@ -35,7 +35,7 @@ public class FragmentEkle extends Fragment {
                 FragmentManager fragmentManager = getChildFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.lc, fragment2);
-                tasarim.lc.removeAllViews();
+                binding.lc.removeAllViews();
                 fragmentTransaction.commit();
             }
         });
