@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.example.kelime_uygulamasi.databinding.ActivityMainBinding;
 import com.example.kelime_uygulamasi.fragment.FragmentSigninPage;
+import com.example.kelime_uygulamasi.repository.FirebaseRepository;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         tasarim = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(tasarim.getRoot());
         fragment();
+        FirebaseRepository firebaseRepository = new FirebaseRepository();
+        firebaseRepository.signIn();
     }
 
     public void fragment(){
