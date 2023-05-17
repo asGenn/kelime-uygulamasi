@@ -10,7 +10,7 @@ import com.example.kelime_uygulamasi.fragment.FragmentSigninPage;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding tasarim;
-    //değişiklik
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
