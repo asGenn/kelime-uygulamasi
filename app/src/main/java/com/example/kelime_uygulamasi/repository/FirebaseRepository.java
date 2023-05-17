@@ -9,11 +9,4 @@ public class FirebaseRepository {
         });
     }
 
-    public void deneme(){
-        System.out.println("deneme");
-        System.out.printf("denme2");
-    }
-    void deneme3(){
-        System.out.println("dsadsdsadsa");
-    }
 }
