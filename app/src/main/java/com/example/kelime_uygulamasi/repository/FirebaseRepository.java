@@ -8,4 +8,8 @@ public class FirebaseRepository {
 
         });
     }
+
+    public void deneme(){
+        System.out.println("deneme");
+    }
 }

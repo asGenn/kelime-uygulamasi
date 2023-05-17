@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         fragment();
         FirebaseRepository firebaseRepository = new FirebaseRepository();
         firebaseRepository.signIn();
+        firebaseRepository.deneme();
     }
 
     public void fragment(){
