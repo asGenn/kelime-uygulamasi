@@ -21,15 +21,15 @@ import java.util.ArrayList;
 
 public class FragmentAddWords extends Fragment {
 
-    private FragmentAddWordsBinding tasarim;
+    private FragmentAddWordsBinding binding;
     private RecyclerView myRecy;
     private ArrayList<deneme> kuluplers;
     private com.example.kelime_uygulamasi.repository.myRecyAdaptor myRecyAdaptor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        tasarim = FragmentAddWordsBinding.inflate(getLayoutInflater(), container, false);
-        myRecy = (RecyclerView) tasarim.myRecy;
+        binding = FragmentAddWordsBinding.inflate(getLayoutInflater(), container, false);
+        myRecy = (RecyclerView) binding.myRecy;
         kuluplers=new ArrayList<>();
         myRecyAdaptor=new myRecyAdaptor(kuluplers);
         myRecy.setAdapter(myRecyAdaptor);
@@ -37,7 +37,7 @@ public class FragmentAddWords extends Fragment {
         diziolustur();
         wordAdd();
         myRecyAdaptor.notifyDataSetChanged();
-        return tasarim.getRoot();
+        return binding.getRoot();
     }
 
     public void diziolustur() {
@@ -56,14 +56,14 @@ public class FragmentAddWords extends Fragment {
     }
 
     public void wordAdd(){
-        tasarim.buttonAdd.setOnClickListener(new View.OnClickListener() {
+        binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment2 = new FragmentEkle();
                 FragmentManager fragmentManager = getChildFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.cl, fragment2);
-                tasarim.cl.removeAllViews();
+                binding.cl.removeAllViews();
                 fragmentTransaction.commit();
             }
         });
