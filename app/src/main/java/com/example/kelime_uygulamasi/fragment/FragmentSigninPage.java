@@ -1,5 +1,6 @@
 package com.example.kelime_uygulamasi.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,7 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.kelime_uygulamasi.ApplicationActivity;
 import com.example.kelime_uygulamasi.R;
+import com.example.kelime_uygulamasi.databinding.FragmentSigninPageBinding;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -87,11 +90,8 @@ public class FragmentSigninPage extends Fragment {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             mUser=mAuth.getCurrentUser();
-                            FragmentHomePage myFragment = new FragmentHomePage();
-                            getChildFragmentManager().beginTransaction()
-                                    .replace(R.id.layout, myFragment)
-                                    .commit();
-                            tasarim.layout.removeAllViews();
+                            Intent intent = new Intent(getActivity(), ApplicationActivity.class);
+                            startActivity(intent);
                         }
                     }).addOnFailureListener(getActivity(), new OnFailureListener() {
                         @Override

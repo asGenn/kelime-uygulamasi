@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/fragmentHomePage"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Ana Sayfa" />
+    <item
+        android:id="@+id/fragmentAddWords"
+        android:icon="@drawable/baseline_add_24"
+        android:title="Kelime Sayfası" />
+    <item
+        android:id="@+id/fragmentProfilePage"
+        android:icon="@drawable/baseline_person_24"
+        android:title="Profil" />
+</menu>
