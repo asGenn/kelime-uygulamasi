@@ -12,7 +12,7 @@ import com.example.kelime_uygulamasi.repository.FirebaseRepository;
 public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding tasarim;
-    //abdulsamet7897897979
+    //abdulsamet
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         fragment();
         FirebaseRepository firebaseRepository = new FirebaseRepository();
         firebaseRepository.signIn();
+        firebaseRepository.deneme();
     }
 
     public void fragment(){
