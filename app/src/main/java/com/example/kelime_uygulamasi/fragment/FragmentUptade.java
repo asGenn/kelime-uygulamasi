@@ -16,11 +16,14 @@ import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentUptadeBinding;
+import com.example.kelime_uygulamasi.repository.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class FragmentUptade extends Fragment {
@@ -33,7 +36,13 @@ public class FragmentUptade extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUptadeBinding.inflate(getLayoutInflater(), container, false);
         setupOnBackPressed();
-        //updateWord(myData, "Kelimeler");
+        binding.buttonUptade.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                updateWord(binding.editTextW.getText().toString(),binding.editTextWM.getText().toString());
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -52,9 +61,11 @@ public class FragmentUptade extends Fragment {
         });
     }
 
-    private void updateWord(HashMap<String, Object> myData, final String Kelimeler) {
-        mFirestore.collection("Words").document("Kelimeler")
-                .update(myData)
+    private void updateWord(String word,String mean) {
+        Deneme  deneme = new Deneme(word,mean);
+
+        mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
+                .update(Deneme.convertToMap(deneme))
                 .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {

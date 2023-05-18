@@ -21,13 +21,13 @@ import java.util.List;
 public class myRecyAdaptor extends RecyclerView.Adapter<myRecyAdaptor.Myholder> {
 
     private final uptadePage uptade_page;
-    ArrayList<deneme> kelimeler;
+    ArrayList<Deneme> kelimeler;
 
-    public void setFilteredList(ArrayList<deneme> filteredList){
+    public void setFilteredList(ArrayList<Deneme> filteredList){
         this.kelimeler=filteredList;
     }
 
-    public myRecyAdaptor(ArrayList<deneme> kelimeler, uptadePage uptade_page) {
+    public myRecyAdaptor(ArrayList<Deneme> kelimeler, uptadePage uptade_page) {
         this.kelimeler=kelimeler;
         this.uptade_page=uptade_page;
     }
@@ -41,8 +41,8 @@ public class myRecyAdaptor extends RecyclerView.Adapter<myRecyAdaptor.Myholder> 
 
     @Override
     public void onBindViewHolder(@NonNull Myholder holder, int position) {
-        holder.textViewWord.setText(kelimeler.get(position).getKelime());
-        holder.textViewWordMean.setText(kelimeler.get(position).getKelimeAnlam());
+        holder.textViewWord.setText(kelimeler.get(position).getWord());
+        holder.textViewWordMean.setText(kelimeler.get(position).getMean());
     }
 
     @Override

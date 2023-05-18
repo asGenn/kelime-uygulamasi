@@ -15,8 +15,10 @@ import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentAddBinding;
+import com.example.kelime_uygulamasi.repository.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -57,12 +59,11 @@ public class FragmentAdd extends Fragment {
             public void onClick(View view) {
                 kelime = binding.editTextWord.getText().toString();
                 kelimeAnlam = binding.editTextWordMean.getText().toString();
-                myData=new HashMap<>();
-                myData.put("Words Name:",kelime);
-                myData.put("Words Mean:",kelimeAnlam);
+                Deneme deneme = new Deneme("word","mean");
 
-                mFirestore.collection("Words").document("Kelimeler")
-                        .set(myData)
+                //TO-DO uid kısmını düzeltin
+                mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
+                        .set(deneme)
                         .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
