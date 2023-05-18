@@ -1,7 +1,8 @@
 package com.example.kelime_uygulamasi.repository;
 
-public class deneme {
+import java.util.List;
 
+public class deneme {
     private String kelime;
     private String kelimeAnlam;
 
