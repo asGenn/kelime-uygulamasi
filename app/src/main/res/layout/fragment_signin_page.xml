@@ -56,9 +56,9 @@
                 android:layout_height="24dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/baseline_visibility_off_24"
-                app:layout_constraintBottom_toBottomOf="@+id/editTextWordMean"
-                app:layout_constraintEnd_toEndOf="@+id/editTextWordMean"
-                app:layout_constraintTop_toTopOf="@+id/editTextWordMean" />
+                app:layout_constraintBottom_toBottomOf="@+id/editTextPassword"
+                app:layout_constraintEnd_toEndOf="@+id/editTextPassword"
+                app:layout_constraintTop_toTopOf="@+id/editTextPassword" />
 
             <Button
                 android:id="@+id/buttonGiris"
@@ -87,10 +87,10 @@
                 android:textColor="@color/color1"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextWordMean" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
             <TextView
-                android:id="@+id/textViewTanıtım"
+                android:id="@+id/textViewTanitim"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -106,7 +106,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
-                android:id="@+id/editTextWordMean"
+                android:id="@+id/editTextPassword"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
@@ -121,10 +121,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextWord" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextEmail" />
 
             <EditText
-                android:id="@+id/editTextWord"
+                android:id="@+id/editTextEmail"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="32dp"
@@ -139,7 +139,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textViewTanıtım" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewTanitim" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
