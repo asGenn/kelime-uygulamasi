@@ -21,6 +21,8 @@ import com.example.kelime_uygulamasi.repository.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -29,7 +31,6 @@ public class FragmentAdd extends Fragment {
 
     private FragmentAddBinding binding;
     private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
-    private HashMap<String,Object> myData;
     private String kelime,kelimeAnlam;
 
     @Override
@@ -41,12 +42,11 @@ public class FragmentAdd extends Fragment {
     }
 
     private void setupOnBackPressed(){
-        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true)  {
             @Override
             public void handleOnBackPressed() {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.cl);
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.remove(currentFragment).commit();
             }
         });
@@ -61,12 +61,35 @@ public class FragmentAdd extends Fragment {
                 Deneme deneme = new Deneme(kelime,kelimeAnlam);
 
                 //TO-DO uid kısmını düzeltin
-                mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
-                        .set(deneme)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                mFirestore.collection("Words")
+                        .add(deneme)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<DocumentReference>() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getActivity(), "Kelime Eklendi", Toast.LENGTH_SHORT).show();
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if (task.isSuccessful()) {
+                                    DocumentReference documentReference = task.getResult();
+                                    String docId = documentReference.getId();
+
+                                    mFirestore.collection("Words").document(docId)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        DocumentSnapshot documentSnapshot = task.getResult();
+                                                        if (documentSnapshot.exists()) {
+                                                            String kelime = documentSnapshot.getString("word");
+                                                            String kelimeAnlam = documentSnapshot.getString("mean");
+                                                            Toast.makeText(getActivity(), "Kelime Eklendi", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } else {
+                                                        //  Log.d(TAG, "Belge alınamadı: ", task.getException());
+                                                    }
+                                                }
+                                            });
+                                } else {
+                                    //Log.d(TAG, "Kelime eklenemedi: ", task.getException());
+                                }
                             }
                         });
             }
