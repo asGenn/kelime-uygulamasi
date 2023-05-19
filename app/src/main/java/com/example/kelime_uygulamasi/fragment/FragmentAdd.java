@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
@@ -42,13 +44,10 @@ public class FragmentAdd extends Fragment {
         getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setEnabled(false);
-                Fragment fragment2 = new FragmentAddWords();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.lc, fragment2);
-                binding.lc.removeAllViews();
-                fragmentTransaction.commit();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.remove(currentFragment).commit();
             }
         });
     }
@@ -59,7 +58,7 @@ public class FragmentAdd extends Fragment {
             public void onClick(View view) {
                 kelime = binding.editTextWord.getText().toString();
                 kelimeAnlam = binding.editTextWordMean.getText().toString();
-                Deneme deneme = new Deneme("word","mean");
+                Deneme deneme = new Deneme(kelime,kelimeAnlam);
 
                 //TO-DO uid kısmını düzeltin
                 mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())

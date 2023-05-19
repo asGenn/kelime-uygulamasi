@@ -1,6 +1,8 @@
 package com.example.kelime_uygulamasi.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.ApplicationActivity;
@@ -39,6 +42,8 @@ public class FragmentSigninPage extends Fragment {
         passwordVisible();
         signUp();
         signInButton();
+        rememberMe();
+        runRememberMe();
         return tasarim.getRoot();
     }
 
@@ -61,12 +66,13 @@ public class FragmentSigninPage extends Fragment {
         tasarim.textViewKayitOl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Fragment fragment2 = new FragmentSignupPage();
-                FragmentManager fragmentManager = getChildFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.layout, fragment2);
-                tasarim.layout.removeAllViews();
-                fragmentTransaction.commit();
+                Fragment newFragment = new FragmentSignupPage();
+                FragmentManager fragmentManager = getParentFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.layout);
+                if (currentFragment != null){
+                    fragmentManager.beginTransaction().remove(currentFragment).addToBackStack(null).commit();
+                }
+                fragmentManager.beginTransaction().add(R.id.layout, newFragment).commit();
             }
         });
     }
@@ -74,8 +80,7 @@ public class FragmentSigninPage extends Fragment {
     public void signInButton(){
         tasarim.buttonGiris.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                signIn();
+            public void onClick(View view) { signIn();
             }
         });
     }
@@ -101,5 +106,37 @@ public class FragmentSigninPage extends Fragment {
                     });
         }else
             Toast.makeText(getActivity(), "Email ve Şifre Boş Olamaz", Toast.LENGTH_SHORT).show();
+    }
+
+    public void rememberMe(){
+        tasarim.checkBoxRememberMe.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (buttonView.isChecked()){
+                    SharedPreferences preferences = getActivity().getSharedPreferences("checkbox", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("remember", "true");
+                    editor.apply();
+                    Toast.makeText(getActivity(), "Seçildi", Toast.LENGTH_SHORT).show();
+                } else if (!buttonView.isChecked()){
+                    SharedPreferences preferences = getActivity().getSharedPreferences("checkbox", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("remember", "false");
+                    editor.apply();
+                    Toast.makeText(getActivity(), "Seçilmedi", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    public void runRememberMe(){
+        SharedPreferences preferences = getActivity().getSharedPreferences("checkbox", Context.MODE_PRIVATE);
+        String checkbox = preferences.getString("remember", "");
+        if (checkbox.equals("true")){
+            Intent intent = new Intent(getActivity(), ApplicationActivity.class);
+            startActivity(intent);
+        } else if (checkbox.equals("false")) {
+            Toast.makeText(getActivity(), "Lütfen Giriş Yapınız", Toast.LENGTH_SHORT).show();
+        }
     }
 }

@@ -50,13 +50,10 @@ public class FragmentUptade extends Fragment {
         getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                setEnabled(false);
-                Fragment fragment2 = new FragmentAddWords();
-                FragmentManager fragmentManager = getChildFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.lcu, fragment2);
-                binding.lcu.removeAllViews();
-                fragmentTransaction.commit();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.remove(currentFragment).commit();
             }
         });
     }
