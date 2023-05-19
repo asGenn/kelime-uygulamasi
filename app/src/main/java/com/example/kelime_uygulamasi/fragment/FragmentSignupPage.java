@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.security.Key;
+
 public class FragmentSignupPage extends Fragment {
 
     private FragmentSignupPageBinding tasarim;
@@ -33,6 +38,7 @@ public class FragmentSignupPage extends Fragment {
         tasarim = FragmentSignupPageBinding.inflate(getLayoutInflater(), container, false);
         passwordVisible();
         signUpButton();
+        login();
         mAuth = FirebaseAuth.getInstance();
         return tasarim.getRoot();
     }
@@ -62,6 +68,36 @@ public class FragmentSignupPage extends Fragment {
                     tasarim.buttonPasswordVisible2.setBackgroundResource(R.drawable.baseline_visibility_24);
                 }
             }
+        });
+    }
+
+    public void login(){
+        tasarim.textViewLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment newFragment = new FragmentSigninPage();
+                FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.layout);
+                if (currentFragment != null){
+                    fragmentManager.beginTransaction().remove(currentFragment).commit();
+                }
+                fragmentManager.beginTransaction().add(R.id.layout, newFragment).commit();
+            }
+        });
+
+        tasarim.getRoot().setFocusableInTouchMode(true);
+        tasarim.getRoot().requestFocus();
+        tasarim.getRoot().setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP) {
+                Fragment newFragment = new FragmentSigninPage();
+                FragmentManager fragmentManager = ((AppCompatActivity) v.getContext()).getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.layout);
+                if (currentFragment != null){
+                    fragmentManager.beginTransaction().remove(currentFragment).commit();
+                }
+                fragmentManager.beginTransaction().add(R.id.layout, newFragment).commit();
+                return true;
+            } return false;
         });
     }
 
