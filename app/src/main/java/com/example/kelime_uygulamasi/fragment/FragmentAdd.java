@@ -4,32 +4,34 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentAddBinding;
-import com.example.kelime_uygulamasi.repository.Deneme;
+import com.example.kelime_uygulamasi.models.Deneme;
+
+import com.example.kelime_uygulamasi.models.WordList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class FragmentAdd extends Fragment {
 
     private FragmentAddBinding binding;
     private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
-    private HashMap<String,Object> myData;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private String kelime,kelimeAnlam;
 
     @Override
@@ -41,35 +43,57 @@ public class FragmentAdd extends Fragment {
     }
 
     private void setupOnBackPressed(){
-        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
+        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true)  {
             @Override
             public void handleOnBackPressed() {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.cl);
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 transaction.remove(currentFragment).commit();
             }
         });
     }
 
     private void addWord(){
+        ArrayList<Deneme> wordListGlobal = new ArrayList<>();
+
         binding.buttonWordAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                kelime = binding.editTextWord.getText().toString();
-                kelimeAnlam = binding.editTextWordMean.getText().toString();
-                Deneme deneme = new Deneme(kelime,kelimeAnlam);
 
-                //TO-DO uid kısmını düzeltin
-                mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
-                        .set(deneme)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Toast.makeText(getActivity(), "Kelime Eklendi", Toast.LENGTH_SHORT).show();
+                mFirestore.collection("User").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()){
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            List<Map<String,Object>> wordList = (List<Map<String, Object>>) documentSnapshot.get("wordList");
+                            ArrayList<Deneme> wordList1 = new ArrayList<>();
+                            if(wordList !=null){
+                                for(Map<String,Object> wordData : wordList){
+                                    Deneme deneme = new Deneme((String) wordData.get("word"), (String) wordData.get("mean"));
+                                    wordList1.add(deneme);
+
+                                }
+
                             }
-                        });
+                            wordListGlobal.clear();
+                            wordList1.add(new Deneme(binding.editTextWord.getText().toString(),binding.editTextWordMean.getText().toString()));
+
+                            wordListGlobal.addAll(wordList1);
+                            mFirestore.collection("User").document(mAuth.getUid()).set(new WordList(wordListGlobal)).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Toast.makeText(getActivity().getApplicationContext(),"Eklendi",Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+
             }
         });
     }
+
 }

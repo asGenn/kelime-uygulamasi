@@ -1,6 +1,5 @@
 package com.example.kelime_uygulamasi.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -16,15 +15,13 @@ import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentUptadeBinding;
-import com.example.kelime_uygulamasi.repository.Deneme;
+import com.example.kelime_uygulamasi.models.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
 
 public class FragmentUptade extends Fragment {
 

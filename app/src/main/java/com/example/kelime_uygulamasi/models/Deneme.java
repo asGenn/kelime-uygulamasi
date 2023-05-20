@@ -1,4 +1,4 @@
-package com.example.kelime_uygulamasi.repository;
+package com.example.kelime_uygulamasi.models;
 
 import java.util.HashMap;
 import java.util.Map;
