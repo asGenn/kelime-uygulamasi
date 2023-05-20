@@ -10,6 +10,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class FirebaseRepository {
+
+    //
     private final FirebaseAuth _auth = FirebaseAuth.getInstance();
     private final FirebaseFirestore _firestore = FirebaseFirestore.getInstance();
     private final MutableLiveData<Deneme> liveData;
