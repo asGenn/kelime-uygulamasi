@@ -8,6 +8,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
@@ -70,12 +71,8 @@ public class FragmentSigninPage extends Fragment {
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new FragmentSignupPage();
-                FragmentManager fragmentManager = getParentFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.layout);
-                if (currentFragment != null){
-                    fragmentManager.beginTransaction().remove(currentFragment).addToBackStack(null).commit();
-                }
-                fragmentManager.beginTransaction().add(R.id.layout, newFragment).commit();
+                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                transaction.replace(R.id.layout, newFragment).commit();
             }
         });
     }

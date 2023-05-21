@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,13 +23,19 @@ import com.example.kelime_uygulamasi.repository.Deneme;
 import com.example.kelime_uygulamasi.adaptor.myRecyAdaptor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 public class FragmentAddWords extends Fragment {
@@ -40,7 +47,6 @@ public class FragmentAddWords extends Fragment {
     private ArrayList<Deneme> kuluplers;
     public ArrayList<Deneme> filteredList;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAddWordsBinding.inflate(getLayoutInflater(), container, false);
@@ -50,7 +56,7 @@ public class FragmentAddWords extends Fragment {
         myRecy.setAdapter(myRecyAdaptor);
         myRecy.setLayoutManager(new LinearLayoutManager(getActivity()));
         addPage();
-        evenChangeListener();
+        eventChangeListener();
         myRecyAdaptor.notifyDataSetChanged();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -65,7 +71,6 @@ public class FragmentAddWords extends Fragment {
                 return false;
             }
         });
-
 
         return binding.getRoot();
     }
@@ -91,7 +96,7 @@ public class FragmentAddWords extends Fragment {
         });
     }
 
-    private void evenChangeListener(){
+    private void eventChangeListener(){
         mFirestore.collection("Words").orderBy("word", Query.Direction.ASCENDING)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -108,6 +113,7 @@ public class FragmentAddWords extends Fragment {
                     }
                 });
     }
+
 
 }
 
