@@ -3,18 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottom_navi"
-    app:startDestination="@id/fragmentHomePage">
-
-    <fragment
-        android:id="@+id/fragmentHomePage"
-        android:name="com.example.kelime_uygulamasi.fragment.FragmentHomePage"
-        android:label="fragment_home_page"
-        tools:layout="@layout/fragment_home_page" />
+    app:startDestination="@id/fragmentAddWords">
     <fragment
         android:id="@+id/fragmentAddWords"
         android:name="com.example.kelime_uygulamasi.fragment.FragmentAddWords"
         android:label="fragment_add_words"
         tools:layout="@layout/fragment_add_words" />
+    <fragment
+        android:id="@+id/fragmentHomePage"
+        android:name="com.example.kelime_uygulamasi.fragment.FragmentHomePage"
+        android:label="fragment_home_page"
+        tools:layout="@layout/fragment_home_page" />
     <fragment
         android:id="@+id/fragmentProfilePage"
         android:name="com.example.kelime_uygulamasi.fragment.FragmentProfilePage"
