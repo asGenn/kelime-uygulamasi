@@ -2,7 +2,6 @@ package com.example.kelime_uygulamasi.adaptor;
 
 import static android.content.ContentValues.TAG;
 
-import android.content.ClipData;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,15 +14,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.kelime_uygulamasi.R;
-import com.example.kelime_uygulamasi.fragment.FragmentAddWords;
 import com.example.kelime_uygulamasi.fragment.FragmentUptade;
-import com.example.kelime_uygulamasi.repository.Deneme;
+import com.example.kelime_uygulamasi.models.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,7 +30,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class myRecyAdaptor extends RecyclerView.Adapter<myRecyAdaptor.Myholder> {
 
@@ -46,8 +41,10 @@ public class myRecyAdaptor extends RecyclerView.Adapter<myRecyAdaptor.Myholder> 
     public ArrayList<Deneme> dataList;
 
     public myRecyAdaptor(ArrayList<Deneme> kelimeler) {
+
         this.kelimeler=kelimeler;
     }
+
 
     @NonNull
     @Override

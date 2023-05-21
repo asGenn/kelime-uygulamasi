@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentAddBinding;
-import com.example.kelime_uygulamasi.repository.Deneme;
+import com.example.kelime_uygulamasi.models.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,5 +1,7 @@
 package com.example.kelime_uygulamasi.repository;
 
+import com.example.kelime_uygulamasi.models.Deneme;
+
 import java.util.ArrayList;
 
 public class WordList {
