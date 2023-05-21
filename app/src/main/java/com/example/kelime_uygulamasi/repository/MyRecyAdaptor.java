@@ -24,12 +24,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class MyRecyAdaptor extends RecyclerView.Adapter<MyRecyAdaptor.Myholder> {
 
@@ -39,6 +43,7 @@ public class MyRecyAdaptor extends RecyclerView.Adapter<MyRecyAdaptor.Myholder> 
 
     public ArrayList<Deneme> filteredList;
     public ArrayList<Deneme> dataList;
+    private FirebaseAuth mAuth;
 
     public MyRecyAdaptor(ArrayList<Deneme> kelimeler) {
         this.kelimeler=kelimeler;
@@ -50,7 +55,6 @@ public class MyRecyAdaptor extends RecyclerView.Adapter<MyRecyAdaptor.Myholder> 
         View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.kelime_item,parent,false);
         return new Myholder(view);
     }
-
 
     @Override
     public void onBindViewHolder(@NonNull Myholder holder, int position) {
@@ -72,51 +76,54 @@ public class MyRecyAdaptor extends RecyclerView.Adapter<MyRecyAdaptor.Myholder> 
                 bundle.putString("kelimeAnlami", kelimeAnlam);
                 newFragment.setArguments(bundle);
                 fragmentManager.beginTransaction().add(R.id.cl, newFragment).addToBackStack(null).commit();
-
             }
         });
 
         holder.buttonRemove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mAuth = FirebaseAuth.getInstance();
                 kelime = holder.textViewWord.getText().toString();
 
-                mFirestore.collection("Words")
-                        .whereEqualTo("word", kelime)
-                        .get()
-                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        String documentId = document.getId(); //
+                mFirestore.collection("User").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            List<Map<String, Object>> wordList = (List<Map<String, Object>>) documentSnapshot.get("wordList");
+                            ArrayList<Deneme> updatedWordList = new ArrayList<>();
 
-                                        DocumentReference docRef = mFirestore.collection("Words").document(documentId);
-
-                                        docRef.delete()
-                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                    @Override
-                                                    public void onSuccess(Void unused) {
-                                                        //FragmentManager fragmentManager = ((FragmentActivity) v.getContext()).getSupportFragmentManager();
-                                                        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                                                        //fragmentTransaction.detach(FragmentAddWords.this);
-                                                        //fragmentTransaction.attach(FragmentAddWords.this);
-                                                        //fragmentTransaction.commit();
-                                                        Toast.makeText(v.getContext(), "Kelime silindi", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                })
-                                                .addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.d(TAG, "Kelime silinemedi: ", e);
-                                                    }
-                                                });
-                                    }
-                                } else {
-                                    Toast.makeText(v.getContext(), "Kelime ID'si bulunurken hata oluştu", Toast.LENGTH_SHORT).show();
+                            if (wordList != null) {
+                                for (Map<String, Object> wordData : wordList) {
+                                    Deneme deneme = new Deneme((String) wordData.get("word"), (String) wordData.get("mean"));
+                                    updatedWordList.add(deneme);
                                 }
                             }
-                        });
+
+                            String kelimeToRemove = holder.textViewWord.getText().toString(); // Silinecek kelimeyi al
+
+                            for (Deneme word : updatedWordList) {
+                                if (word.getWord().equals(kelimeToRemove)) { // Silinecek kelimeyi bulduk
+                                    updatedWordList.remove(word); // Kelimeyi listeden kaldır
+                                    break;
+                                }
+                            }
+
+                            mFirestore.collection("User").document(mAuth.getUid()).update("wordList", updatedWordList)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(v.getContext(), "Kelime Silindi", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.e(TAG, "Kelime silme hatası: " + task.getException().getMessage());
+                                                Toast.makeText(v.getContext(), "Kelime Silme İşlemi Başarısız", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+                        }
+                    }
+                });
             }
         });
     }

@@ -34,8 +34,6 @@ public class FragmentAdd extends Fragment {
 
     private FragmentAddBinding binding;
     private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
-    private HashMap<String,Object> myData;
-    private String kelime,kelimeAnlam;
     private FirebaseAuth mAuth;
 
     @Override

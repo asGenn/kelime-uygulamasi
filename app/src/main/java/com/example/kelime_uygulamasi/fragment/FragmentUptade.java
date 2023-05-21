@@ -24,12 +24,16 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FragmentUptade extends Fragment {
@@ -38,6 +42,7 @@ public class FragmentUptade extends Fragment {
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
     private String word, mean;
     private String kelime;
+    private FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -71,6 +76,10 @@ public class FragmentUptade extends Fragment {
     }
 
     private void updateWord(String word,String mean) {
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = currentUser.getUid();
+
         Deneme deneme = new Deneme(word, mean);
         kelime = getArguments().getString("kelime");
 
@@ -78,37 +87,44 @@ public class FragmentUptade extends Fragment {
         updateData.put("word", deneme.getWord());
         updateData.put("mean", deneme.getMean());
 
-        mFirestore.collection("User")
-                .whereEqualTo("word", kelime)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String docId = document.getId();
-                                DocumentReference updatedDocRef = mFirestore.collection("Words").document(docId);
-                                updatedDocRef.update(updateData)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getActivity(), "Kelime Güncellendi", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e(TAG, "Kelime güncelleme hatası: " + e.getMessage());
-                                                Toast.makeText(getActivity(), "Kelime Güncelleme İşlemi Başarısız", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
-                        } else {
-                            Log.d(TAG, "Belge alınamadı: " + task.getException());
+        mFirestore.collection("User").document(mAuth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    List<Map<String, Object>> wordList = (List<Map<String, Object>>) documentSnapshot.get("wordList");
+                    ArrayList<Deneme> updatedWordList = new ArrayList<>();
+
+                    if (wordList != null) {
+                        for (Map<String, Object> wordData : wordList) {
+                            Deneme deneme = new Deneme((String) wordData.get("word"), (String) wordData.get("mean"));
+                            updatedWordList.add(deneme);
                         }
                     }
-                });
-    }
 
+                    for (Deneme word : updatedWordList) {
+                        if (word.getWord().equals(kelime)) { // Aradığımız kelimeyi bulduk
+                            word.setWord(binding.editTextW.getText().toString());
+                            word.setMean(binding.editTextWM.getText().toString());
+                            break;
+                        }
+                    }
+
+                    mFirestore.collection("User").document(mAuth.getUid()).update("wordList", updatedWordList)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(getActivity().getApplicationContext(), "Kelime Güncellendi", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Log.e(TAG, "Kelime güncelleme hatası: " + task.getException().getMessage());
+                                        Toast.makeText(getActivity().getApplicationContext(), "Kelime Güncelleme İşlemi Başarısız", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+        });
+    }
 }
 
