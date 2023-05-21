@@ -1,59 +1,58 @@
 package com.example.kelime_uygulamasi.fragment;
 
-
-
 import android.os.Bundle;
-
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.Toast;
 import com.example.kelime_uygulamasi.R;
+import com.example.kelime_uygulamasi.adaptor.myRecyAdaptor;
 import com.example.kelime_uygulamasi.databinding.FragmentAddWordsBinding;
 import com.example.kelime_uygulamasi.models.Deneme;
-
 import com.example.kelime_uygulamasi.repository.MyRecyAdaptor;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-
 public class FragmentAddWords extends Fragment {
 
     private FragmentAddWordsBinding binding;
     private RecyclerView myRecy;
-    private MyRecyAdaptor myRecyAdaptor;
-    private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
+    private com.example.kelime_uygulamasi.repository.MyRecyAdaptor myRecyAdaptor;
+    private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
     private ArrayList<Deneme> kuluplers;
-    public ArrayList<Deneme> filteredList;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentAddWordsBinding.inflate(getLayoutInflater(), container, false);
         myRecy = (RecyclerView) binding.myRecy;
-        kuluplers = new ArrayList<>();
-        myRecyAdaptor = new MyRecyAdaptor(kuluplers);
+        kuluplers=new ArrayList<>();
+        myRecyAdaptor=new MyRecyAdaptor(kuluplers);
         myRecy.setAdapter(myRecyAdaptor);
         myRecy.setLayoutManager(new LinearLayoutManager(getActivity()));
         addPage();
         eventChangeListener();
-
-
+        myRecyAdaptor.notifyDataSetChanged();
 
         binding.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -68,8 +67,6 @@ public class FragmentAddWords extends Fragment {
             }
         });
 
-
-
         return binding.getRoot();
     }
 
@@ -83,17 +80,18 @@ public class FragmentAddWords extends Fragment {
         }
     }
 
-    public void addPage() {
-        binding.buttonAdd.setOnClickListener(new View.OnClickListener() {
+    public void addPage(){
+        binding.buttonAddPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment newFragment = new FragmentAdd();
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
-                transaction.replace(R.id.cl, newFragment).commit();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.cl, newFragment);
+                transaction.commit();
             }
         });
     }
-
 
     private void eventChangeListener() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -128,7 +126,4 @@ public class FragmentAddWords extends Fragment {
     }
 
 
-
 }
-
-

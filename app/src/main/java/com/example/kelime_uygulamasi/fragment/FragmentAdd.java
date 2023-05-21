@@ -4,19 +4,21 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentAddBinding;
 import com.example.kelime_uygulamasi.models.Deneme;
-
-import com.example.kelime_uygulamasi.models.WordList;
+import com.example.kelime_uygulamasi.repository.WordList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +34,9 @@ public class FragmentAdd extends Fragment {
 
     private FragmentAddBinding binding;
     private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
-    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private HashMap<String,Object> myData;
     private String kelime,kelimeAnlam;
+    private FirebaseAuth mAuth;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,11 +47,12 @@ public class FragmentAdd extends Fragment {
     }
 
     private void setupOnBackPressed(){
-        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true)  {
+        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.cl);
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.remove(currentFragment).commit();
             }
         });
@@ -55,6 +60,7 @@ public class FragmentAdd extends Fragment {
 
     private void addWord(){
         ArrayList<Deneme> wordListGlobal = new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance();
 
         binding.buttonWordAdd.setOnClickListener(new View.OnClickListener() {
             @Override
