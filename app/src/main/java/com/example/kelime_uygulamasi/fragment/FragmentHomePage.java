@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.kelime_uygulamasi.databinding.FragmentHomePageBinding;
+import com.example.kelime_uygulamasi.repository.ChatGptRepository;
 
 public class FragmentHomePage extends Fragment {
 
@@ -18,7 +19,8 @@ public class FragmentHomePage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         tasarim = FragmentHomePageBinding.inflate(getLayoutInflater(), container, false);
 
-        
+        ChatGptRepository chatGptRepository = new ChatGptRepository();
+        chatGptRepository.getChatComplation();
         return tasarim.getRoot();
     }
 }
