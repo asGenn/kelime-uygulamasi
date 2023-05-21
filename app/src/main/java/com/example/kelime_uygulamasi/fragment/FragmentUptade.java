@@ -78,7 +78,7 @@ public class FragmentUptade extends Fragment {
         updateData.put("word", deneme.getWord());
         updateData.put("mean", deneme.getMean());
 
-        mFirestore.collection("Words")
+        mFirestore.collection("User")
                 .whereEqualTo("word", kelime)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {

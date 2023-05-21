@@ -38,7 +38,6 @@ public class FragmentSigninPage extends Fragment {
     private FirebaseUser mUser;
     private boolean isRememberMeChecked;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         tasarim = FragmentSigninPageBinding.inflate(getLayoutInflater(), container, false);

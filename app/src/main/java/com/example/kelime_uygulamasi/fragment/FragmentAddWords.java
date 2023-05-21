@@ -2,6 +2,7 @@ package com.example.kelime_uygulamasi.fragment;
 
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -19,12 +20,19 @@ import com.example.kelime_uygulamasi.models.Deneme;
 import com.example.kelime_uygulamasi.repository.MyRecyAdaptor;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class FragmentAddWords extends Fragment {
 
@@ -85,22 +93,37 @@ public class FragmentAddWords extends Fragment {
         });
     }
 
-    private void eventChangeListener(){
-        mFirestore.collection("Words").orderBy("word", Query.Direction.ASCENDING)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                kuluplers.add(document.toObject(Deneme.class));
-                            }
-                            myRecyAdaptor.notifyDataSetChanged();
-                        } else {
-                            Toast.makeText(getActivity(),"Kelimeler Listelenemedi",Toast.LENGTH_SHORT).show();
+    private void eventChangeListener() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = currentUser.getUid(); // Kullanıcının kimliği
+
+        mFirestore.collection("User").document(userId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    // Hata durumuyla başa çıkın
+                    return;
+                }
+
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+
+                    List<Map<String,Object>> wordList = (List<Map<String, Object>>) documentSnapshot.get("wordList");
+                    ArrayList<Deneme> wordList1 = new ArrayList<>();
+                    if(wordList !=null){
+
+                        for(Map<String,Object> wordData : wordList){
+                            Deneme deneme = new Deneme((String) wordData.get("word"), (String) wordData.get("mean"));
+                            wordList1.add(deneme);
                         }
                     }
-                });
+
+                    kuluplers.clear();
+                    kuluplers.addAll(wordList1);
+                    myRecyAdaptor.notifyDataSetChanged();
+                }
+            }
+        });
     }
+
 
 }
