@@ -40,8 +40,6 @@ public class MyRecyAdaptor extends RecyclerView.Adapter<MyRecyAdaptor.Myholder> 
     ArrayList<Deneme> kelimeler;
     String kelime, kelimeAnlam;
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-
-    public ArrayList<Deneme> filteredList;
     public ArrayList<Deneme> dataList;
     private FirebaseAuth mAuth;
 

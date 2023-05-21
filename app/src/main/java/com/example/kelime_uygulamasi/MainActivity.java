@@ -33,4 +33,5 @@ public class MainActivity extends AppCompatActivity {
         }
         fragmentManager.beginTransaction().add(R.id.layout, newFragment).commit();
     }
+
 }
