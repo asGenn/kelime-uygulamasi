@@ -1,7 +1,5 @@
 package com.example.kelime_uygulamasi.fragment;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.os.Bundle;
 
@@ -11,7 +9,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +18,9 @@ import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentUptadeBinding;
 import com.example.kelime_uygulamasi.repository.Deneme;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,21 +30,12 @@ public class FragmentUptade extends Fragment {
 
     private FragmentUptadeBinding binding;
     private FirebaseFirestore mFirestore = FirebaseFirestore.getInstance();
-    String kelime, kelimeAnlam;
+    private HashMap<String, Object> myData;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentUptadeBinding.inflate(getLayoutInflater(), container, false);
         setupOnBackPressed();
-
-        if (getArguments()!=null){
-            kelime = getArguments().getString("kelime");
-            kelimeAnlam = getArguments().getString("kelimeAnlami");
-        }
-
-        binding.editTextW.setText(kelime);
-        binding.editTextWM.setText(kelimeAnlam);
-
         binding.buttonUptade.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,42 +59,17 @@ public class FragmentUptade extends Fragment {
     }
 
     private void updateWord(String word,String mean) {
-        Deneme deneme = new Deneme(word, mean);
+        Deneme  deneme = new Deneme(word,mean);
 
-        Map<String, Object> updateData = new HashMap<>();
-        updateData.put("word", deneme.getWord());
-        updateData.put("mean", deneme.getMean());
-
-        mFirestore.collection("Words")
-                .whereEqualTo("word", kelime)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
+                .update(Deneme.convertToMap(deneme))
+                .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String docId = document.getId();
-                                DocumentReference updatedDocRef = mFirestore.collection("Words").document(docId);
-                                updatedDocRef.update(updateData)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Toast.makeText(getActivity(), "Kelime Güncellendi", Toast.LENGTH_SHORT).show();
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.e(TAG, "Kelime güncelleme hatası: " + e.getMessage());
-                                                Toast.makeText(getActivity(), "Kelime Güncelleme İşlemi Başarısız", Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                            }
-                        } else {
-                            Log.d(TAG, "Belge alınamadı: " + task.getException());
+                            Toast.makeText(getActivity(), "Veri Güncellendi", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-
 }

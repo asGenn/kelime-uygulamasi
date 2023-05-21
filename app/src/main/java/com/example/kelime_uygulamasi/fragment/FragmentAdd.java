@@ -1,41 +1,36 @@
 package com.example.kelime_uygulamasi.fragment;
 
-import static android.content.ContentValues.TAG;
-
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.kelime_uygulamasi.R;
 import com.example.kelime_uygulamasi.databinding.FragmentAddBinding;
 import com.example.kelime_uygulamasi.repository.Deneme;
-import com.example.kelime_uygulamasi.repository.WordList;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.HashMap;
 
 public class FragmentAdd extends Fragment {
 
     private FragmentAddBinding binding;
-    private final FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
-    public String kelime, kelimeAnlam;
-
+    private FirebaseFirestore mFirestore=FirebaseFirestore.getInstance();
+    private HashMap<String,Object> myData;
+    private String kelime,kelimeAnlam;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -46,11 +41,12 @@ public class FragmentAdd extends Fragment {
     }
 
     private void setupOnBackPressed(){
-        getActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true)  {
+        getActivity().getOnBackPressedDispatcher().addCallback(new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Fragment currentFragment = getParentFragmentManager().findFragmentById(R.id.cl);
-                FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.cl);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
                 transaction.remove(currentFragment).commit();
             }
         });
@@ -65,37 +61,15 @@ public class FragmentAdd extends Fragment {
                 Deneme deneme = new Deneme(kelime,kelimeAnlam);
 
                 //TO-DO uid kısmını düzeltin
-                mFirestore.collection("Words")
-                        .add(deneme)
-                        .addOnCompleteListener(getActivity(), new OnCompleteListener<DocumentReference>() {
+                mFirestore.collection("Words").document(FirebaseAuth.getInstance().getUid())
+                        .set(deneme)
+                        .addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
                             @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                if (task.isSuccessful()) {
-                                    DocumentReference documentReference = task.getResult();
-                                    String docId = documentReference.getId();
-
-                                    mFirestore.collection("Words").document(docId)
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        DocumentSnapshot documentSnapshot = task.getResult();
-                                                        if (documentSnapshot.exists()) {
-                                                            Toast.makeText(getActivity(), "Kelime Eklendi", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    } else {
-                                                        Log.d(TAG, "Belge alınamadı: ", task.getException());
-                                                    }
-                                                }
-                                            });
-                                } else {
-                                    Log.d(TAG, "Kelime eklenemedi: ", task.getException());
-                                }
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(getActivity(), "Kelime Eklendi", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
         });
     }
-
 }
