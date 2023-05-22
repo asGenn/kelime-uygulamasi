@@ -26,7 +26,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ChatGptRepository {
     private final String model = "gpt-3.5-turbo";
-    private final String API_KEY = "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";
+    private final String API_KEY = "OPEN_AI_KEY";
     private final OpenAiService service = new OpenAiService(API_KEY, Duration.ofSeconds(30));
     private ChatCompletionRequest request;
     private ChatCompletionResult result;
