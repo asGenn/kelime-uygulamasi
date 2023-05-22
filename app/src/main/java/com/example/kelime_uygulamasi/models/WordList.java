@@ -1,7 +1,5 @@
 package com.example.kelime_uygulamasi.models;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 
