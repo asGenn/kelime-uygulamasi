@@ -1,72 +1,66 @@
 package com.example.kelime_uygulamasi.repository;
 
-import android.util.Log;
 
-import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
-import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Single;
+import io.reactivex.rxjava3.core.SingleObserver;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
-import io.reactivex.Scheduler;
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ChatGptRepository {
+    private final String model = "gpt-3.5-turbo";
+    private final String  API_KEY = "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";
+    private final OpenAiService service = new OpenAiService(API_KEY);
+    private ChatCompletionRequest request;
+    private ChatCompletionResult result;
+    private List<ChatMessage> messages;
 
-    String token = System.getenv("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");
-    OpenAiService service = new OpenAiService("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");
+    public ChatGptRepository() {
+        messages = new ArrayList<>();
+    }
 
-
-    public void getChatComplation(){
-        final List<ChatMessage> messages = new ArrayList<>();
-        final ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(),"your are english story teller. \n" +
-                "I'll give you Json format :\n" +
-                "{\n" +
-                "       \"words\":[\n" +
-                "           ]\n" +
-                "}\n" +
-                "you have to return Json format like this :\n" +
-                "{\n" +
-                "    \"stroy\":\"\"\n" +
-                "\n" +
-                "}");
-
+    public void generateWordDetail(){
+        ChatMessage systemMessage = new ChatMessage("system","you are english random word genator" );
         messages.add(systemMessage);
-
-
+        ChatMessage userMessage = new ChatMessage("user", "give me random word");
+        messages.add(userMessage);
         Single.fromCallable(() -> {
-            ChatCompletionRequest chatCompletionRequest =
-                    ChatCompletionRequest.builder().
-                    model("gpt-3.5-turbo").messages(messages).
-                    n(1).logitBias(new HashMap<>()).build();
-            ChatCompletionResult chatCompletionResult = service.createChatCompletion(chatCompletionRequest);
-           return chatCompletionResult;
-        }).subscribeOn(Schedulers.io())
+                    request = ChatCompletionRequest
+                            .builder()
+                            .messages(messages)
+                            .model(model)
+                            .temperature(1.0)
+                            .topP(1.0)
+                            .build();
+                     result = service.createChatCompletion(request);
+                    return result;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new SingleObserver<ChatCompletionResult>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
-
                     @Override
-                    public void onSuccess(ChatCompletionResult value) {
-                        System.out.println(value.getChoices().get(0).getMessage().getContent()+"**********************");
+                    public void onSuccess(@NonNull ChatCompletionResult chatCompletionResult) {
+
+                        System.out.println(chatCompletionResult.getChoices().get(0).getMessage().getContent());
+
                     }
-
                     @Override
-                    public void onError(Throwable e) {
-                        Log.d("error", "onError: "+e);
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
                     }
                 });
-
 
     }
 
