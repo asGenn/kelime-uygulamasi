@@ -1,6 +1,8 @@
 package com.example.kelime_uygulamasi.repository;
 
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
@@ -18,17 +20,19 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ChatGptRepository {
     private final String model = "gpt-3.5-turbo";
-    private final String  API_KEY = "OPEN_AI_API";
+    private final String  API_KEY = "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";
     private final OpenAiService service = new OpenAiService(API_KEY);
     private ChatCompletionRequest request;
     private ChatCompletionResult result;
     private List<ChatMessage> messages;
+    private MutableLiveData<String> story;
 
     public ChatGptRepository() {
         messages = new ArrayList<>();
+        story = new MutableLiveData<>();
     }
 
-    public void generateWordDetail(){
+    public MutableLiveData<String> generateWordDetail(){
         ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), "you are english random word genator" );
         messages.add(systemMessage);
         ChatMessage userMessage = new ChatMessage(ChatMessageRole.USER.value(), "give me random word");
@@ -54,7 +58,8 @@ public class ChatGptRepository {
                     @Override
                     public void onSuccess(@NonNull ChatCompletionResult chatCompletionResult) {
 
-                        System.out.println(chatCompletionResult.getChoices().get(0).getMessage().getContent());
+
+                        story.postValue(chatCompletionResult.getChoices().get(0).getMessage().getContent());
 
                     }
                     @Override
@@ -62,6 +67,7 @@ public class ChatGptRepository {
                         e.printStackTrace();
                     }
                 });
+        return story;
 
     }
 

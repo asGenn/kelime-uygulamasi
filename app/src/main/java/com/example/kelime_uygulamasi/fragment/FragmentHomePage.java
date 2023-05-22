@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,14 @@ public class FragmentHomePage extends Fragment {
             @Override
             public void onClick(View view) {
                 chatGptRepository.generateWordDetail();
+                chatGptRepository.generateWordDetail().observe(getViewLifecycleOwner(), new Observer<String>() {
+                    @Override
+                    public void onChanged(String s) {
+                        tasarim.textView.setText(s);
+                        tasarim.button.setVisibility(View.GONE);
+                    }
+                });
+
             }
         });
 
