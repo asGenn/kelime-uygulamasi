@@ -12,13 +12,14 @@
         android:layout_height="450dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="100dp"
         app:cardCornerRadius="30dp"
         app:cardElevation="20dp"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -39,24 +40,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewKayit" />
 
             <Button
-                android:contentDescription="@string/app_name"
                 android:id="@+id/buttonPasswordVisible2"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="12dp"
-                android:text=""
                 android:background="@drawable/baseline_visibility_off_24"
+                android:contentDescription="@string/app_name"
+                android:text=""
                 app:layout_constraintBottom_toBottomOf="@+id/editTextPassword2"
                 app:layout_constraintEnd_toEndOf="@+id/editTextPassword2"
                 app:layout_constraintTop_toTopOf="@+id/editTextPassword2" />
 
             <Button
-                android:contentDescription="@string/app_name"
                 android:id="@+id/buttonPasswordVisible1"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/baseline_visibility_off_24"
+                android:contentDescription="@string/app_name"
                 app:layout_constraintBottom_toBottomOf="@+id/editTextPassword1"
                 app:layout_constraintEnd_toEndOf="@+id/editTextPassword1"
                 app:layout_constraintTop_toTopOf="@+id/editTextPassword1" />

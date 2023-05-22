@@ -78,7 +78,8 @@ public class FragmentAdd extends Fragment {
                             }
                             wordListGlobal.clear();
                             wordList1.add(new Deneme(binding.editTextWord.getText().toString(),binding.editTextWordMean.getText().toString()));
-
+                            binding.editTextWord.setText("");
+                            binding.editTextWordMean.setText("");
                             wordListGlobal.addAll(wordList1);
                             mFirestore.collection("User").document(mAuth.getUid()).set(new WordList(wordListGlobal)).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override

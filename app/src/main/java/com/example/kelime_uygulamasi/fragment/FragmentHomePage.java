@@ -36,15 +36,22 @@ public class FragmentHomePage extends Fragment {
         tasarim = FragmentHomePageBinding.inflate(getLayoutInflater(), container, false);
         chatGptRepository = new ChatGptRepository();
         wordList();
+        tasarim.textViewHikaye.setVisibility(View.INVISIBLE);
+        tasarim.progressBar.setVisibility(View.INVISIBLE);
         tasarim.buttonHikaye.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chatGptRepository.generateWordDetail();
+
+                tasarim.progressBar.setVisibility(View.VISIBLE);
+                tasarim.buttonHikaye.setVisibility(View.GONE);
                 chatGptRepository.generateWordDetail().observe(getViewLifecycleOwner(), new Observer<String>() {
                     @Override
                     public void onChanged(String s) {
+
                         tasarim.textViewHikaye.setText(s);
-                        tasarim.buttonHikaye.setVisibility(View.GONE);
+                        tasarim.textViewHikaye.setVisibility(View.VISIBLE);
+
+                        tasarim.progressBar.setVisibility(View.INVISIBLE);
                     }
                 });
 
@@ -90,6 +97,8 @@ public class FragmentHomePage extends Fragment {
 
                         tasarim.textViewKelime.setText(kelimelerText);
                         tasarim.textViewAnlamlar.setText(anlamlarText);
+
+
                     } else {
                         Log.d(TAG, "Kullanıcının eklediği kelime yok.");
                     }
