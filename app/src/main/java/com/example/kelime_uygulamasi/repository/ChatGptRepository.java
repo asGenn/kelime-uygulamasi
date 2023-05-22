@@ -4,6 +4,7 @@ package com.example.kelime_uygulamasi.repository;
 import com.theokanning.openai.completion.chat.ChatCompletionRequest;
 import com.theokanning.openai.completion.chat.ChatCompletionResult;
 import com.theokanning.openai.completion.chat.ChatMessage;
+import com.theokanning.openai.completion.chat.ChatMessageRole;
 import com.theokanning.openai.service.OpenAiService;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class ChatGptRepository {
     private final String model = "gpt-3.5-turbo";
-    private final String  API_KEY = "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";
+    private final String  API_KEY = "OPEN_AI_API";
     private final OpenAiService service = new OpenAiService(API_KEY);
     private ChatCompletionRequest request;
     private ChatCompletionResult result;
@@ -28,9 +29,9 @@ public class ChatGptRepository {
     }
 
     public void generateWordDetail(){
-        ChatMessage systemMessage = new ChatMessage("system","you are english random word genator" );
+        ChatMessage systemMessage = new ChatMessage(ChatMessageRole.SYSTEM.value(), "you are english random word genator" );
         messages.add(systemMessage);
-        ChatMessage userMessage = new ChatMessage("user", "give me random word");
+        ChatMessage userMessage = new ChatMessage(ChatMessageRole.USER.value(), "give me random word");
         messages.add(userMessage);
         Single.fromCallable(() -> {
                     request = ChatCompletionRequest
